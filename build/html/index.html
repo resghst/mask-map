@@ -1,0 +1,322 @@
+<!DOCTYPE html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>HIIII</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""><link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css"><link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css"><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"><style>html, body{
+width: 100%;
+height: 100%;
+}
+#map{
+width: 100%;
+height: 100%;
+}
+@import url(https://fonts.googleapis.com/earlyaccess/cwtexyen.css);
+
+.popup-region{
+  width:100%;
+  font-family: 'cwTeXYen', sans-serif;
+  color:#1f3c88;
+}
+
+.popup-header{
+  letter-spacing:4px;
+  font-size: 20px;
+  font-weight:800;
+  border-bottom: blue solid 4px;
+  text-align:center;
+}
+
+.mask-info{
+  letter-spacing: 5px;
+  padding-left:10px;
+  font-size:18px;
+  font-weight:800;
+  align-self:flex-start;
+  margin-top:10px;
+}
+
+.popup-time{
+  font-size:12px;
+  font-weight:600;
+  text-align:right;
+  align-self:flex-end;
+}
+
+.list-group{
+  width:90%;
+  height:80px;
+}
+
+.list-group-item{
+  width:50%;
+  margin-left:2px;
+  padding:10px 0px 0px 10px !important;
+  border-top-width: 1px !important;
+  border-left-width: 1px !important;
+}
+
+.list-group-item .mask{
+  height:80%;
+}
+
+.list-group-item .mask .maskcat{
+  margin:0px;
+  font-size:20px;
+  font-weight:1000;
+}
+
+.real{
+  font-weight: 900;
+  font-size: 26px;
+  align-self: flex-start;
+  text-align: center;
+}
+
+.popup-from{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  font-size:18px;
+}
+
+.popup-from .table td{
+  font-size:14px;
+}
+.popup-from .table th{
+  font-size:18px;
+}
+
+.popup-from .table th{
+  width:100px;
+  text-align:justify;
+  text-justify:distribute-all-lines;/*ie6-8*/
+  text-align-last:justify;/* ie9*/
+  -moz-text-align-last:justify;/*ff*/
+  -webkit-text-align-last:justify;/*chrome 20+*/
+  color:#1f3c88;
+  padding: 3px 5px !important;
+}
+
+.table{
+  margin-bottom:0px !important;
+}
+
+.table td{
+  padding: 3px 5px !important;
+}
+
+.getMapDir{
+  font-size: 10px !important;
+  padding:4px 12px 3px 12px !important;
+  height: 50% !important;
+}
+
+.getMapDir i{
+  padding-left: 10px;
+}
+
+.work-table{
+  width:100%;
+  font-size:14px;
+  font-weight:600;
+  color:#1f3c88;
+  background:#d7f7f5;
+  margin-bottom:10px;
+  text-align:center;
+}
+
+.work-table td,.work-table th{
+  height: 25%;
+  width: 12.5%;
+}
+
+.work-table .active{
+  background:#3dd893;
+}
+.work-table .active:after{
+  content:"O";
+}
+
+.work-table .dective{
+  background:#d0d0d0;
+}
+.work-table .dective:after{
+  content:"X";
+}
+#tel{
+  padding-bottom: 0px 2px !important;
+  font-size: 18px;
+}
+</style></head><body>    <div id="map"></div><script src="https://unpkg.com/vue/dist/vue.js"></script><script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script><script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script><script src="https://unpkg.com/axios/dist/axios.min.js"></script><script src="https://cdn.jsdelivr.net/npm/lodash@4/lodash.min.js"></script><script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster-src.js"></script><script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script><script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/b1d047a8b2.js" crossorigin="anonymous"></script><script>/* global _, L, Qs, Papa */
+const httpBuildQuery = obj => Qs.stringify(obj, { arrayFormat: 'brackets' })
+const [DEFAULT_LAT, DEFAULT_LNG, DEFAULT_ZOOM] = [25.040857, 121.567904, 15]
+var map = '';
+var LeafIcon = L.Icon.extend({
+  options: {
+    iconSize:     [36, 36],
+    shadowSize:   [18, 18],
+    popupAnchor:  [0, -20]
+  }
+});
+var vm = new Vue({
+  el: '#map',
+  data:  () =>({
+    src : 'https://storage.googleapis.com/maskmap/my-map.csv'
+  }),
+  async mounted () {
+    await this.init()
+  },
+  methods:{
+    async init(){
+      await this.setmap()
+      await this.getGeo()
+      const data = await this.getMaskData(this.src)
+      await this.putMaker(data)
+    },
+    async setmap(){
+      const title = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '<a href="https://www.openstreetmap.org/">OSM</a>',
+        maxZoom: 18,
+      })
+      map = L.map('map',{
+        center: [DEFAULT_LAT, DEFAULT_LNG],
+        zoom: DEFAULT_ZOOM,
+        layers: [title]
+      });
+    },
+    async putMaker(stores){
+      const markers = _.map( stores, store =>{
+        if(_.isNaN(store.adult)|_.isEmpty(store.adult)) store.adult = 0
+        if(_.isNaN(store.child)|_.isEmpty(store.child)) store.child = 0
+        let iconUrl = "https://imgur.com/aBJNjEh.png"
+        if(store.adult=0) iconUrl="https://imgur.com/B5l2Sib.png"
+        else if(store.adult<20) iconUrl="https://imgur.com/18Mi6jz.png"
+        return L.marker([store.lat, store.lng],{
+          maxWidth: "auto",
+          icon:new LeafIcon({iconUrl})
+        })
+        .bindPopup(`
+          <div class='popup-region'>
+            <div class='popup-header'>${store.name}</div>
+            <div class='popup-from'>
+              <div class="mask-info">口罩剩餘數量</div>
+              <ul class="list-group list-group-horizontal">
+                <li class="list-group-item">
+                  <div class="mask">
+                    <p class="maskcat">成人</p>
+                    <div class="real">${store.adult}</div>
+                </li>
+                <li class="list-group-item">
+                  <div class="mask">
+                    <p class="maskcat">兒童</p>
+                    <div class="real">${store.child}</div>
+                  </div>
+                </li>
+              </ul>
+              <table class="table table-borderless">
+                <tbody>
+                  <tr>
+                    <th scope="row">藥局電話</th>
+                    <td id="tel"><a href="tel:${store.tel}">${store.tel}</a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">藥局地址</th>
+                    <td><button type="button" class="getMapDir btn btn-primary" onclick="window.open('https://www.google.com.tw/maps/search/${store.lat},${store.lng}','_blank')">Google 導航<i class="fas fa-map-marked-alt"></i></button></td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">${store.address} <a href="https://www.google.com.tw/maps/search/${store.lat},${store.lng}" target="_blank"><i class="fas fa-external-link-alt"></i></a></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">開業時間</th>
+                  </tr>
+                </tbody>
+              </table>
+              <table class="work-table">
+                <tr>
+                  <th></th>
+                  <th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th><th>日</th>
+                </tr>
+                <tr>
+                  <th>早</th>
+                  <td class="active"></td>
+                  <td class="dective"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                </tr>
+                <tr>
+                  <th>中</th>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                </tr>
+                <tr>
+                  <th>晚</th>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                  <td class="active"></td>
+                </tr>
+              </table>
+            </div>
+            <div class="popup-time">更新時間：2020/02/26 19:02:39</div>
+          </div>  
+        `)
+      })
+      map.addLayer(L.markerClusterGroup({
+        chunkedLoading: true,
+        disableClusteringAtZoom: 18,
+      }).addLayers(markers))
+    },
+    async getMaskData(url){
+      url = new URL(url)
+      const csv = _.trim(_.get(await axios.get(url.href), 'data'))
+      return _.get(Papa.parse(csv, {
+        encoding: 'utf8',
+        header: true,
+      }), 'data', [])
+    },
+    async getGeo(){
+      const latlng = await new Promise(resolve => {
+        map.locate({ setView: true })
+          .on('locationfound', e => { resolve(e.latlng) })
+          .on('locationerror', e => { resolve(L.latLng(DEFAULT_LAT, DEFAULT_LNG)) })
+        })
+      map.setZoom(DEFAULT_ZOOM)
+      L.circle(latlng, {
+        stroke: false,
+        fillColor: '#00beff',
+        fillOpacity: 0.2,
+        radius: 300
+      }).addTo(map)
+      L.circle(latlng, {
+        stroke: false,
+        fillColor: '#00beff',
+        fillOpacity: 0.1,
+        radius: 1000
+      }).addTo(map)
+      L.marker(latlng, {
+        icon: L.icon({
+          iconAnchor: [10, 36],
+          iconSize: [40, 76],
+          iconUrl: 'https://image.flaticon.com/icons/svg/727/727598.svg',
+          popupAnchor: [0, -38]
+        })
+      }).addTo(map)
+    }
+  }
+})
+
+          //- <strong>藥局名稱 : ${store.name}</strong><br>\
+          //- <strong>成人口罩 : ${store.adult}</strong><br>\
+          //- <strong>兒童口罩 : ${store.child}</strong><br>\
+          //- <strong>電　　話 : ${store.tel}</strong><br>\
+          //- <strong>地　　址 : ${store.address}</strong><br>\
+          //- https://www.google.com.tw/maps/search/${store.lat},${store.lng}\
+
+</script><noscript><strong>Sorry this mask map does not work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><script type="text/javascript" src=".././javascript/main.js"></script></body>
